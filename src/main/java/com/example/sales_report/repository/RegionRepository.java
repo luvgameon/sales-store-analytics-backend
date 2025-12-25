@@ -1,0 +1,11 @@
+package com.example.sales_report.repository;
+
+
+
+import com.example.sales_report.entity.Region;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface RegionRepository extends JpaRepository<Region, Long> {
+}
