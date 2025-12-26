@@ -1,13 +1,12 @@
 package com.example.sales_report.controller;
 
+import com.example.sales_report.dto.request.ActiveStoreKpiRequest;
 import com.example.sales_report.dto.response.ActiveStoresKpiResponse;
 import com.example.sales_report.dto.response.ApiResponse;
+import com.example.sales_report.dto.response.StoreDashboardKpiResponse;
 import com.example.sales_report.service.StoreDashboardService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -27,6 +26,16 @@ public class StoreDashboardController {
         return ApiResponse.<ActiveStoresKpiResponse> builder()
                 .status("SUCCESS")
                 .data(service.activeStoresKpi(startDate, endDate))
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+    @PostMapping("/kpis")
+    public ApiResponse<StoreDashboardKpiResponse> storeKpis(
+            @RequestBody ActiveStoreKpiRequest request) {
+
+        return ApiResponse.<StoreDashboardKpiResponse>builder()
+                .status("SUCCESS")
+                .data(service.getStoreKpis(request))
                 .timestamp(LocalDateTime.now())
                 .build();
     }

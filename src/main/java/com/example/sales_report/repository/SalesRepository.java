@@ -146,4 +146,110 @@ public interface SalesRepository extends JpaRepository<Sales, Long> {
             @Param("startDate") LocalDate startDate,
             @Param("endDate") LocalDate endDate
     );
+    @Query(
+            value = """
+    SELECT COUNT(DISTINCT s.store_id)
+    FROM sales s
+    JOIN product p ON s.product_id = p.id
+    JOIN store st ON s.store_id = st.id
+    JOIN region r ON st.region_id = r.id
+    WHERE s.sale_date BETWEEN :startDate AND :endDate
+      AND (:brand = 'all' OR p.brand = :brand)
+      AND (:category = 'all' OR p.category = :category)
+      AND (:region = 'all' OR r.name = :region)
+    """,
+            nativeQuery = true
+    )
+    Long totalActiveStores(
+            LocalDate startDate,
+            LocalDate endDate,
+            String brand,
+            String category,
+            String region
+    );
+    @Query(
+            value = """
+    SELECT COUNT(DISTINCT s.store_id)
+    FROM sales s
+    JOIN product p ON s.product_id = p.id
+    JOIN store st ON s.store_id = st.id
+    JOIN region r ON st.region_id = r.id
+    WHERE s.sale_date BETWEEN :prevStart AND :prevEnd
+      AND (:brand = 'all' OR p.brand = :brand)
+      AND (:category = 'all' OR p.category = :category)
+      AND (:region = 'all' OR r.name = :region)
+    """,
+            nativeQuery = true
+    )
+    Long totalActiveStoresPrevYear(
+            LocalDate prevStart,
+            LocalDate prevEnd,
+            String brand,
+            String category,
+            String region
+    );
+    @Query(
+            value = """
+    SELECT COUNT(DISTINCT curr.store_id)
+    FROM (
+        SELECT DISTINCT s.store_id
+        FROM sales s
+        JOIN product p ON s.product_id = p.id
+        JOIN store st ON s.store_id = st.id
+        JOIN region r ON st.region_id = r.id
+        WHERE s.sale_date BETWEEN :startDate AND :endDate
+          AND (:brand = 'all' OR p.brand = :brand)
+          AND (:category = 'all' OR p.category = :category)
+          AND (:region = 'all' OR r.name = :region)
+    ) curr
+    LEFT JOIN (
+        SELECT DISTINCT s.store_id
+        FROM sales s
+        JOIN product p ON s.product_id = p.id
+        JOIN store st ON s.store_id = st.id
+        JOIN region r ON st.region_id = r.id
+        WHERE s.sale_date BETWEEN :prevStart AND :prevEnd
+          AND (:brand = 'all' OR p.brand = :brand)
+          AND (:category = 'all' OR p.category = :category)
+          AND (:region = 'all' OR r.name = :region)
+    ) prev
+    ON curr.store_id = prev.store_id
+    WHERE prev.store_id IS NULL
+    """,
+            nativeQuery = true
+    )
+    Long newStores(
+            LocalDate startDate,
+            LocalDate endDate,
+            LocalDate prevStart,
+            LocalDate prevEnd,
+            String brand,
+            String category,
+            String region
+    );
+    @Query(
+            value = """
+    SELECT r.name
+    FROM sales s
+    JOIN product p ON s.product_id = p.id
+    JOIN store st ON s.store_id = st.id
+    JOIN region r ON st.region_id = r.id
+    WHERE s.sale_date BETWEEN :startDate AND :endDate
+      AND (:brand = 'all' OR p.brand = :brand)
+      AND (:category = 'all' OR p.category = :category)
+      AND (:region = 'all' OR r.name = :region)
+    GROUP BY r.name
+    ORDER BY COUNT(DISTINCT s.store_id) DESC
+    LIMIT 1
+    """,
+            nativeQuery = true
+    )
+    String topRegion(
+            LocalDate startDate,
+            LocalDate endDate,
+            String brand,
+            String category,
+            String region
+    );
+
 }
