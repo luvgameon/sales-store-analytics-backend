@@ -1,15 +1,13 @@
 package com.example.sales_report.controller;
 
 
-import com.example.sales_report.dto.response.ApiResponse;
-import com.example.sales_report.dto.response.SalesByRegionResponse;
-import com.example.sales_report.dto.response.SalesKpiResponse;
-import com.example.sales_report.dto.response.TimeSeriesResponse;
+import com.example.sales_report.dto.request.ActiveStoreKpiRequest;
+import com.example.sales_report.dto.response.*;
+import com.example.sales_report.dto.response.Sales.*;
 import com.example.sales_report.service.SalesDashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -20,40 +18,61 @@ public class SalesDashboardController {
 
     private final SalesDashboardService service;
 
-    @GetMapping("/kpis")
-    public ApiResponse<SalesKpiResponse> kpis(
-            @RequestParam LocalDate startDate,
-            @RequestParam LocalDate endDate) {
 
-        return ApiResponse.<SalesKpiResponse> builder()
-                .status("SUCCESS")
-                .data(service.salesKpis(startDate, endDate))
-                .timestamp(LocalDateTime.now())
-                .build();
-    }
-
-    @GetMapping("/trend")
-    public ApiResponse<List<TimeSeriesResponse>> trend(
-            @RequestParam LocalDate startDate,
-            @RequestParam LocalDate endDate) {
-
-        return ApiResponse.<List<TimeSeriesResponse>>builder()
-                .status("SUCCESS")
-                .data(service.salesTrend(startDate, endDate))
-                .timestamp(LocalDateTime.now())
-                .build();
-    }
-
-    @GetMapping("/by-region")
-    public ApiResponse<List<SalesByRegionResponse>> byRegion(
-            @RequestParam LocalDate startDate,
-            @RequestParam LocalDate endDate) {
+    @PostMapping("/by-region")
+    public ApiResponse<List<SalesByRegionResponse>> salesByRegion(
+            @RequestBody ActiveStoreKpiRequest request) {
 
         return ApiResponse.<List<SalesByRegionResponse>>builder()
                 .status("SUCCESS")
-                .data(service.salesByRegion(startDate, endDate))
+                .data(service.getSalesByRegion(request))
                 .timestamp(LocalDateTime.now())
                 .build();
     }
+    @PostMapping("/kpis")
+    public ApiResponse<SalesKpiResponseDTO> salesKpis(
+            @RequestBody ActiveStoreKpiRequest request) {
+
+        return ApiResponse.<SalesKpiResponseDTO>builder()
+                .status("SUCCESS")
+                .data(service.getSalesKpis(request))
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+    @PostMapping("/by-brand")
+    public ApiResponse<List<SalesByBrandResponse>> salesByBrand(
+            @RequestBody ActiveStoreKpiRequest request) {
+
+        return ApiResponse.<List<SalesByBrandResponse>>builder()
+                .status("SUCCESS")
+                .data(service.getSalesByBrand(request))
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+    @GetMapping("/trendChart")
+    public ApiResponse<List<SalesTrendResponse>> salesTrend(
+            @RequestParam int year) {
+
+        return ApiResponse.<List<SalesTrendResponse>>builder()
+                .status("SUCCESS")
+                .data(service.getSalesTrend(year))
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+    @PostMapping("/by-brand/products")
+    public ApiResponse<List<BrandProductSalesResponse>> brandProductSales(
+            @RequestParam String brand,
+            @RequestBody ActiveStoreKpiRequest filter) {
+
+        return ApiResponse.<List<BrandProductSalesResponse>>builder()
+                .status("SUCCESS")
+                .data(service.getBrandProductSales(brand, filter))
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
+
+
 }
 

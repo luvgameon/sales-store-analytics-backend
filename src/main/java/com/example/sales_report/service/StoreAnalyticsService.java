@@ -1,6 +1,6 @@
 package com.example.sales_report.service;
 
-import com.example.sales_report.dto.response.ActiveStoreResponse;
+import com.example.sales_report.dto.response.Store.ActiveStoreResponse;
 import com.example.sales_report.repository.SalesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

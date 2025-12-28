@@ -1,14 +1,9 @@
 package com.example.sales_report.service;
 
-import com.example.sales_report.dto.response.ActiveStoreResponse;
-import com.example.sales_report.dto.response.SalesAggregationResponse;
 import com.example.sales_report.repository.RegionRepository;
-import com.example.sales_report.repository.SalesRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-import java.util.Arrays;
 import java.util.List;
 
 import static java.util.Arrays.stream;

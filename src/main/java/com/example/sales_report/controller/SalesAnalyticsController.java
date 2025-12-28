@@ -1,7 +1,7 @@
 package com.example.sales_report.controller;
 
 import com.example.sales_report.dto.response.ApiResponse;
-import com.example.sales_report.dto.response.SalesAggregationResponse;
+import com.example.sales_report.dto.response.Sales.SalesAggregationResponse;
 import com.example.sales_report.service.SalesAnalyticsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,15 +1,16 @@
 package com.example.sales_report.controller;
 
 import com.example.sales_report.dto.request.ActiveStoreKpiRequest;
-import com.example.sales_report.dto.response.ActiveStoresKpiResponse;
-import com.example.sales_report.dto.response.ApiResponse;
-import com.example.sales_report.dto.response.StoreDashboardKpiResponse;
+import com.example.sales_report.dto.response.*;
+import com.example.sales_report.dto.response.Store.ActiveStoresByRegionResponse;
+import com.example.sales_report.dto.response.Store.ActiveStoresTrendResponse;
+import com.example.sales_report.dto.response.Store.StoreDashboardKpiResponse;
 import com.example.sales_report.service.StoreDashboardService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/dashboard/stores")
@@ -18,14 +19,13 @@ public class StoreDashboardController {
 
     private final StoreDashboardService service;
 
-    @GetMapping("/kpis")
-    public ApiResponse<ActiveStoresKpiResponse> kpis(
-            @RequestParam LocalDate startDate,
-            @RequestParam LocalDate endDate) {
+    @GetMapping("/trend")
+    public ApiResponse<List<ActiveStoresTrendResponse>> activeStoresTrend(
+            @RequestParam int year) {
 
-        return ApiResponse.<ActiveStoresKpiResponse> builder()
+        return ApiResponse.<List<ActiveStoresTrendResponse>>builder()
                 .status("SUCCESS")
-                .data(service.activeStoresKpi(startDate, endDate))
+                .data(service.getActiveStoresTrend(year))
                 .timestamp(LocalDateTime.now())
                 .build();
     }
@@ -39,4 +39,15 @@ public class StoreDashboardController {
                 .timestamp(LocalDateTime.now())
                 .build();
     }
+    @PostMapping("/by-region")
+    public ApiResponse<List<ActiveStoresByRegionResponse>> activeStoresByRegion(
+            @RequestBody ActiveStoreKpiRequest request) {
+
+        return ApiResponse.<List<ActiveStoresByRegionResponse>>builder()
+                .status("SUCCESS")
+                .data(service.getActiveStoresByRegion(request))
+                .timestamp(LocalDateTime.now())
+                .build();
+    }
+
 }

@@ -1,4 +1,4 @@
-package com.example.sales_report.dto.response;
+package com.example.sales_report.dto.response.Store;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
